@@ -50,6 +50,7 @@
 				setTimeout(reelMCs[i].gotoAndPlay, i * Constants.STOP_DELAY, "stop");
 			}
 			spinTimer.reset();
+			dispatchEvent(new SlotEvent(SlotEvent.SPIN_STOPPING));
 		}
 		
 		private function startSpin(reelMC: MovieClip): void

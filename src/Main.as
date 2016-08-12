@@ -8,6 +8,8 @@
 	import flash.events.TimerEvent;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import fl.motion.AdjustColor;
+	import flash.filters.ColorMatrixFilter;
 
 	public class Main extends MovieClip
 	{
@@ -20,6 +22,8 @@
 		
 		private var lockedUI: Boolean;
 		
+		private var grayFilter: ColorMatrixFilter;
+		
 		public function Main()
 		{
 			lines = new Lines(this);
@@ -30,8 +34,11 @@
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			reels.addEventListener(SlotEvent.SPIN_STARTED, onSpinStarted);
 			reels.addEventListener(SlotEvent.SPIN_STOPPED, onSpinStopped);
+			reels.addEventListener(SlotEvent.SPIN_STOPPING, onSpinStopping);
 
 			updateUI();
+			grayFilter = stop_btn.filters[0];
+			stop_btn.filters = null;
 			
 			popup_no_money.gotoAndStop(1);
 			popup_no_money.visible = false;
@@ -59,7 +66,7 @@
 			
 			updateUI();
 			spin_btn.visible = false;
-			lockedUI = true;
+			lockUI(true);
 		}
 		
 		private function stopSpin(e: Event = null): void
@@ -69,7 +76,6 @@
 				return;
 			}
 			reels.stop();
-			lockedUI = true;
 		}
 
 		private function onKeyPress(e: KeyboardEvent): void
@@ -80,9 +86,14 @@
 			}
 		}
 		
+		private function onSpinStopping(e: SlotEvent): void
+		{
+			lockUI(true);
+		}
+		
 		private function onSpinStarted(e: SlotEvent): void
 		{
-			lockedUI = false;
+			lockUI(false);
 		}
 		
 		private function onSpinStopped(e: SlotEvent): void
@@ -95,7 +106,7 @@
 				updateUI();
 			}
 			spin_btn.visible = true;
-			lockedUI = false;
+			lockUI(false);
 		}
 		
 		private function updateUI(): void
@@ -103,6 +114,15 @@
 			bet_mc.value_txt.text = bet;
 			win_mc.value_txt.text = win;
 			score_mc.value_txt.text = cash;
+		}
+		
+		private function lockUI(value: Boolean): void
+		{
+			lockedUI = value;
+			if (value)
+				stop_btn.filters = [grayFilter];
+			else
+				stop_btn.filters = null;
 		}
 	}
 }

@@ -6,6 +6,7 @@
 	{
 		public static const SPIN_STARTED: String = "spin_started";
 		public static const SPIN_STOPPED: String = "spin_stopped";
+		public static const SPIN_STOPPING: String = "spin_stopping";
 		
 		public var data: Object;
 		
